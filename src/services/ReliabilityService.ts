@@ -2,7 +2,6 @@ import { promiseRepository } from '../repositories/PromiseRepository';
 import { settingsRepository } from '../repositories/SettingsRepository';
 import { ReliabilityScore, ReliabilityLevel, PromiseStatus } from '../types';
 import { differenceInDays } from 'date-fns';
-
 export const computeReliabilityScore = async (): Promise<ReliabilityScore> => {
   const allPromises = await promiseRepository.findAll();
 
@@ -21,9 +20,9 @@ export const computeReliabilityScore = async (): Promise<ReliabilityScore> => {
     avgClosure = Math.round(closureTimes.reduce((a, b) => a + b, 0) / closureTimes.length);
   }
 
-  // Check-in streak
-  const lastCheckin = await settingsRepository.get('last_checkin_date');
-  const checkinStreak = lastCheckin ? computeCheckinStreak(lastCheckin) : 0;
+  // Check-in streak — maintained by completeCheckin() in CheckinService
+  const storedStreak = await settingsRepository.get('checkin_streak');
+  const checkinStreak = storedStreak ? parseInt(storedStreak, 10) : 0;
 
   // Score computation (0-100)
   let score = 50; // Base
@@ -68,13 +67,4 @@ const getReliabilityLevel = (score: number): ReliabilityLevel => {
   if (score >= 60) return ReliabilityLevel.STABLE;
   if (score >= 40) return ReliabilityLevel.A_RENFORCER;
   return ReliabilityLevel.SOUS_TENSION;
-};
-
-const computeCheckinStreak = (lastCheckinDate: string): number => {
-  if (!lastCheckinDate) return 0;
-  const last = new Date(lastCheckinDate);
-  const today = new Date();
-  const days = differenceInDays(today, last);
-  if (days <= 1) return 1;
-  return 0;
 };

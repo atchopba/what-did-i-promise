@@ -56,10 +56,13 @@ export const scheduleCheckinReminder = async (): Promise<void> => {
     const enabled = await settingsRepository.getBool('notifications_enabled', true);
     if (!enabled) return;
 
-    await ExpoNotifications.cancelAllScheduledNotificationsAsync();
+    // Cancel any existing check-in reminder without touching promise reminders
+    const existingId = await settingsRepository.get('checkin_notification_id');
+    if (existingId) {
+      await cancelNotification(existingId);
+    }
 
-    // Schedule daily at 9 AM
-    await ExpoNotifications.scheduleNotificationAsync({
+    const notificationId = await ExpoNotifications.scheduleNotificationAsync({
       content: {
         title: 'What Did I Promise?',
         body: FR.feedback.checkinReminder,
@@ -71,6 +74,8 @@ export const scheduleCheckinReminder = async (): Promise<void> => {
         minute: 0,
       },
     });
+
+    await settingsRepository.set('checkin_notification_id', notificationId);
   } catch (error) {
     console.error('Failed to schedule checkin reminder:', error);
   }

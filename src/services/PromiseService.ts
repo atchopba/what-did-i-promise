@@ -207,17 +207,18 @@ export const groupPromisesByTimeSection = (promises: PromiseWithPerson[]): TimeS
     { key: 'today', title: FR.promises.sections.today, data: [] },
     { key: 'overdue', title: FR.promises.sections.overdue, data: [] },
     { key: 'thisWeek', title: FR.promises.sections.thisWeek, data: [] },
+    { key: 'later', title: FR.promises.sections.later, data: [] },
     { key: 'noDate', title: FR.promises.sections.noDate, data: [] },
     { key: 'recentlyDone', title: FR.promises.sections.recentlyDone, data: [] },
   ];
 
   for (const p of promises) {
     if (p.status === PromiseStatus.TENUE) {
-      sections[4].data.push(p);
+      sections[5].data.push(p);
       continue;
     }
     if (!p.dueDate) {
-      sections[3].data.push(p);
+      sections[4].data.push(p);
       continue;
     }
     const due = new Date(p.dueDate);
@@ -229,7 +230,7 @@ export const groupPromisesByTimeSection = (promises: PromiseWithPerson[]): TimeS
     } else if (due <= weekEnd) {
       sections[2].data.push(p);
     } else {
-      sections[2].data.push(p);
+      sections[3].data.push(p);
     }
   }
 

@@ -40,6 +40,7 @@ export const FR = {
       today: "Aujourd'hui",
       overdue: "En retard",
       thisWeek: "Cette semaine",
+      later: "Plus tard",
       noDate: "Sans date",
       recentlyDone: "Récemment tenues",
       all: "Toutes",
