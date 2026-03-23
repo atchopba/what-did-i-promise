@@ -87,6 +87,7 @@ export const BUILT_IN_TEMPLATES = [
   { id: 'tpl_26', title: 'Livrer le projet', priority: PromisePriority.CRITIQUE, context: ContextType.TRAVAIL, dueOffsetDays: 7 },
   { id: 'tpl_27', title: "Venir à l'événement", priority: PromisePriority.ELEVEE, context: ContextType.FAMILLE, dueOffsetDays: 14 },
   { id: 'tpl_28', title: 'Faire la réparation', priority: PromisePriority.NORMALE, context: ContextType.MAISON, dueOffsetDays: 7 },
+  // dueOffsetDays: null — keeping a secret is an indefinite commitment with no natural deadline
   { id: 'tpl_29', title: 'Garder le secret', priority: PromisePriority.CRITIQUE, context: ContextType.PERSONNEL, dueOffsetDays: null },
   { id: 'tpl_30', title: 'Soutenir cette personne', priority: PromisePriority.ELEVEE, context: ContextType.FAMILLE, dueOffsetDays: 3 },
   { id: 'tpl_31', title: 'Transmettre le feedback', priority: PromisePriority.NORMALE, context: ContextType.TRAVAIL, dueOffsetDays: 2 },
