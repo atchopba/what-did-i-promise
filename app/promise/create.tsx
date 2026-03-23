@@ -33,7 +33,7 @@ export default function CreatePromiseScreen() {
   const [duePrecision, setDuePrecision] = useState<DuePrecision>(DuePrecision.AUCUNE);
   const [reminderEnabled, setReminderEnabled] = useState(false);
 
-  useEffect(() => { loadPeople(); }, []);
+  useEffect(() => { loadPeople(); }, [loadPeople]);
 
   const getDueDate = (): string | null => {
     const opt = DUE_PRECISION_OPTIONS.find(o => o.value === duePrecision);

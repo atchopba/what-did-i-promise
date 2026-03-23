@@ -23,7 +23,7 @@ const WEIGHTS = {
   openTooLong: 10,       // Open for 30+ days
   impreciseDueOld: 10,   // Imprecise date, old promise
   noNotes: 5,            // No follow-up notes
-  relationshipWeight: 15, // High relationship weight (bonus applied)
+  relationshipWeight: 15, // High relationship weight increases risk (more important to keep)
 };
 
 export const computeRiskScore = async (promise: PromiseEntity | PromiseWithPerson): Promise<number> => {
