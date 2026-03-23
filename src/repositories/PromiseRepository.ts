@@ -72,7 +72,8 @@ export class PromiseRepository {
     const db = getDatabase();
     const row = await db.getFirstAsync<any>(
       `SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+              per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
        FROM promises p
        LEFT JOIN people per ON p.personId = per.id
        WHERE p.id = ?`,
@@ -86,7 +87,8 @@ export class PromiseRepository {
     const db = getDatabase();
     let query = `
       SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-             per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+             per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+             per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
       FROM promises p
       LEFT JOIN people per ON p.personId = per.id
       WHERE p.isArchived = 0
@@ -208,7 +210,8 @@ export class PromiseRepository {
     const today = new Date().toISOString().split('T')[0];
     const rows = await db.getAllAsync<any>(
       `SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+              per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
        FROM promises p
        LEFT JOIN people per ON p.personId = per.id
        WHERE p.isArchived = 0
@@ -226,7 +229,8 @@ export class PromiseRepository {
     const today = new Date().toISOString().split('T')[0];
     const rows = await db.getAllAsync<any>(
       `SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+              per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
        FROM promises p
        LEFT JOIN people per ON p.personId = per.id
        WHERE p.isArchived = 0
@@ -245,7 +249,8 @@ export class PromiseRepository {
     const weekEnd = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
     const rows = await db.getAllAsync<any>(
       `SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+              per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
        FROM promises p
        LEFT JOIN people per ON p.personId = per.id
        WHERE p.isArchived = 0
@@ -264,7 +269,8 @@ export class PromiseRepository {
     const cutoff = new Date(Date.now() - daysThreshold * 86400000).toISOString();
     const rows = await db.getAllAsync<any>(
       `SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+              per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
        FROM promises p
        LEFT JOIN people per ON p.personId = per.id
        WHERE p.isArchived = 0
@@ -283,7 +289,8 @@ export class PromiseRepository {
     const cutoff = new Date(Date.now() - days * 86400000).toISOString();
     const rows = await db.getAllAsync<any>(
       `SELECT p.*, per.id as per_id, per.name as per_name, per.type as per_type,
-              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived
+              per.colorSeed as per_colorSeed, per.relationshipWeight as per_weight, per.archived as per_archived,
+              per.createdAt as per_createdAt, per.updatedAt as per_updatedAt, per.notes as per_notes
        FROM promises p
        LEFT JOIN people per ON p.personId = per.id
        WHERE p.status = 'tenue'
@@ -323,7 +330,11 @@ export class PromiseRepository {
   }
 
   private mapRowWithPerson(row: any): PromiseWithPerson {
-    const { per_id, per_name, per_type, per_colorSeed, per_weight, per_archived, ...promiseData } = row;
+    const {
+      per_id, per_name, per_type, per_colorSeed, per_weight, per_archived,
+      per_createdAt, per_updatedAt, per_notes,
+      ...promiseData
+    } = row;
     const result: PromiseWithPerson = { ...promiseData };
     if (per_id) {
       result.person = {
@@ -333,9 +344,9 @@ export class PromiseRepository {
         colorSeed: per_colorSeed,
         relationshipWeight: per_weight,
         archived: per_archived,
-        createdAt: '',
-        updatedAt: '',
-        notes: null,
+        createdAt: per_createdAt ?? '',
+        updatedAt: per_updatedAt ?? '',
+        notes: per_notes ?? null,
       };
     }
     return result;
