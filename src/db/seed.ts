@@ -1,12 +1,17 @@
-import * as SQLite from 'expo-sqlite';
-import {
-  ContextType,
-  PersonType,
-  PromisePriority,
-  PromiseStatus,
-  DuePrecision,
-} from '../types';
 import { BUILT_IN_TEMPLATES } from '../constants/datasets';
+import {
+    ContextType,
+    DuePrecision,
+    PersonType,
+    PromisePriority,
+    PromiseStatus,
+} from '../types';
+
+/** Minimal DB interface used by the seeder — works on both native (expo-sqlite) and web (AlaSQL). */
+interface SeedableDB {
+  runAsync: (sql: string, params?: unknown[]) => Promise<void>;
+  getFirstAsync: <T>(sql: string, params?: unknown[]) => Promise<T | null>;
+}
 
 const generateId = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -20,7 +25,7 @@ const nowISO = (): string => new Date().toISOString();
 const daysAgo = (n: number): string => new Date(Date.now() - n * 86400000).toISOString();
 const daysFromNow = (n: number): string => new Date(Date.now() + n * 86400000).toISOString();
 
-export const seedDatabase = async (db: SQLite.SQLiteDatabase): Promise<void> => {
+export const seedDatabase = async (db: SeedableDB): Promise<void> => {
   // Check if already seeded
   const existing = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM people');
   if (existing && existing.count > 0) return;

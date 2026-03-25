@@ -1,18 +1,21 @@
 import * as ExpoNotifications from 'expo-notifications';
 import { SchedulableTriggerInputTypes } from 'expo-notifications';
-import { Reminder } from '../types';
+import { Platform } from 'react-native';
 import { FR } from '../constants/strings.fr';
 import { settingsRepository } from '../repositories/SettingsRepository';
+import { Reminder } from '../types';
 
-ExpoNotifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+if (Platform.OS !== 'web')
+  ExpoNotifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
 
 export const requestNotificationPermissions = async (): Promise<boolean> => {
+  if (Platform.OS === 'web') return false;
   const { status: existing } = await ExpoNotifications.getPermissionsAsync();
   if (existing === 'granted') return true;
 
@@ -22,8 +25,9 @@ export const requestNotificationPermissions = async (): Promise<boolean> => {
 
 export const scheduleReminder = async (
   reminder: Reminder,
-  promiseTitle: string
+  promiseTitle: string,
 ): Promise<string | null> => {
+  if (Platform.OS === 'web') return null;
   try {
     const enabled = await settingsRepository.getBool('notifications_enabled', true);
     if (!enabled) return null;
@@ -52,6 +56,7 @@ export const scheduleReminder = async (
 };
 
 export const scheduleCheckinReminder = async (): Promise<void> => {
+  if (Platform.OS === 'web') return;
   try {
     const enabled = await settingsRepository.getBool('notifications_enabled', true);
     if (!enabled) return;
@@ -84,8 +89,9 @@ export const scheduleCheckinReminder = async (): Promise<void> => {
 export const scheduleStaleReminder = async (
   promiseId: string,
   promiseTitle: string,
-  daysSinceCreation: number
+  daysSinceCreation: number,
 ): Promise<string | null> => {
+  if (Platform.OS === 'web') return null;
   try {
     const body = FR.feedback.staleReminder.replace('{days}', String(daysSinceCreation));
 
@@ -106,6 +112,7 @@ export const scheduleStaleReminder = async (
 };
 
 export const cancelNotification = async (notificationId: string): Promise<void> => {
+  if (Platform.OS === 'web') return;
   try {
     await ExpoNotifications.cancelScheduledNotificationAsync(notificationId);
   } catch {
@@ -114,5 +121,6 @@ export const cancelNotification = async (notificationId: string): Promise<void> 
 };
 
 export const cancelAllNotifications = async (): Promise<void> => {
+  if (Platform.OS === 'web') return;
   await ExpoNotifications.cancelAllScheduledNotificationsAsync();
 };
