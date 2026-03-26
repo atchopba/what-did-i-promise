@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { COLORS, SPACING, RADIUS, FONT_SIZE, FONT_WEIGHT } from '../constants/theme';
+import { COLORS, FONT_SIZE, FONT_WEIGHT, RADIUS, SPACING } from '../constants/theme';
 
 interface ChipOption {
   value: string;
@@ -17,20 +17,36 @@ interface FilterChipsProps {
 }
 
 export const FilterChips: React.FC<FilterChipsProps> = ({
-  options, selected, onToggle, multi: _multi = true,
+  options,
+  selected,
+  onToggle,
+  multi: _multi = true,
 }) => (
-  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.row}
+    style={styles.container}
+  >
     {options.map(opt => {
       const isSelected = selected.includes(opt.value);
       const color = opt.color ?? COLORS.primary[600];
       return (
         <TouchableOpacity
           key={opt.value}
-          style={[styles.chip, isSelected && { backgroundColor: color + '20', borderColor: color }]}
+          style={[
+            styles.chip,
+            {
+              borderColor: color,
+              backgroundColor: isSelected ? color + '25' : COLORS.neutral[0],
+            },
+          ]}
           onPress={() => onToggle(opt.value)}
           activeOpacity={0.75}
         >
-          <Text style={[styles.label, isSelected && { color }]}>{opt.label}</Text>
+          <Text style={[styles.label, { color: isSelected ? color : COLORS.neutral[800] }]}>
+            {opt.label}
+          </Text>
         </TouchableOpacity>
       );
     })}
@@ -38,14 +54,25 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 );
 
 const styles = StyleSheet.create({
-  row: { paddingHorizontal: SPACING.base, gap: SPACING.xs, paddingVertical: SPACING.sm },
-  chip: {
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.xs,
-    borderRadius: RADIUS.full,
-    borderWidth: 1,
-    borderColor: COLORS.neutral[200],
-    backgroundColor: COLORS.neutral[50],
+  container: {
+    flexShrink: 0,
+    minHeight: 60,
   },
-  label: { fontSize: FONT_SIZE.sm, fontWeight: FONT_WEIGHT.medium, color: COLORS.neutral[600] },
+  row: {
+    paddingHorizontal: SPACING.base,
+    gap: SPACING.sm,
+    paddingTop: SPACING.sm,
+    paddingBottom: SPACING.lg,
+  },
+  chip: {
+    paddingHorizontal: 20,
+    minHeight: 44,
+    justifyContent: 'center' as const,
+    borderRadius: RADIUS.full,
+    borderWidth: 2,
+  },
+  label: {
+    fontSize: FONT_SIZE.base,
+    fontWeight: FONT_WEIGHT.semibold,
+  },
 });

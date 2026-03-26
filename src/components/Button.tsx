@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ViewStyle,
-  TextStyle,
+    ActivityIndicator,
+    StyleSheet,
+    Text,
+    TextStyle,
+    TouchableOpacity,
+    ViewStyle,
 } from 'react-native';
 
-import { COLORS, SPACING, RADIUS, FONT_SIZE, FONT_WEIGHT, SHADOWS } from '../constants/theme';
+import { COLORS, FONT_SIZE, FONT_WEIGHT, RADIUS, SHADOWS, SPACING } from '../constants/theme';
 
 interface ButtonProps {
   title: string;
@@ -42,12 +42,7 @@ export const Button: React.FC<ButtonProps> = ({
     style,
   ];
 
-  const labelStyle = [
-    styles.label,
-    styles[`label_${variant}`],
-    styles[`label_${size}`],
-    textStyle,
-  ];
+  const labelStyle = [styles.label, styles[`label_${variant}`], styles[`label_${size}`], textStyle];
 
   return (
     <TouchableOpacity
@@ -76,7 +71,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     ...SHADOWS.sm,
   },
-  fullWidth: { width: '100%' },
+  fullWidth: { alignSelf: 'stretch' },
   disabled: { opacity: 0.5 },
 
   // Variants

@@ -38,18 +38,19 @@ export default function Onboarding() {
   const [current, setCurrent] = useState(0);
   const { setOnboardingCompleted } = useSettingsStore();
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (current < SLIDES.length - 1) {
       setCurrent(current + 1);
     } else {
-      await setOnboardingCompleted();
+      // Navigate immediately — don't wait for async work (notifications setup)
       router.replace('/(tabs)');
+      setOnboardingCompleted();
     }
   };
 
-  const handleSkip = async () => {
-    await setOnboardingCompleted();
+  const handleSkip = () => {
     router.replace('/(tabs)');
+    setOnboardingCompleted();
   };
 
   return (
